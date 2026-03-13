@@ -19,8 +19,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.23.3
+
+      - name: Patch cibuildwheel for rate limits
+        shell: python
+        run: |
+          import pathlib
+          import cibuildwheel.util
+          import os
+          
+          path = pathlib.Path(cibuildwheel.util.__file__)
+          code = path.read_text(encoding="utf-8")
+          
+          old_code = "with urllib.request.urlopen(url, context=context) as response:"
+          new_code = '''
+          import urllib.request as _ur
+          req = _ur.Request(url, headers={'Authorization': 'Bearer ' + os.environ.get('GITHUB_TOKEN')} if 'github' in url and os.environ.get('GITHUB_TOKEN') else {})
+          with _ur.urlopen(req, context=context) as response:
+          '''
+          
+          if old_code in code:
+              path.write_text(code.replace(old_code, new_code.strip()), encoding="utf-8")
+              print("Successfully patched cibuildwheel!")
+          else:
+              print("Could not find the code to patch. It might fail.")
+
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.3
+        run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_SKIP: "pp* cp36-* cp37-*"
