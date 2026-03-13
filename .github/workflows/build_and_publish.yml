@@ -33,19 +33,20 @@ jobs:
           import pathlib
           import cibuildwheel.util
           import os
+          import re
           
           path = pathlib.Path(cibuildwheel.util.__file__)
           code = path.read_text(encoding="utf-8")
           
-          old_code = "with urllib.request.urlopen(url, context=context) as response:"
-          new_code = '''
-          import urllib.request as _ur
-          req = _ur.Request(url, headers={'Authorization': 'Bearer ' + os.environ.get('GITHUB_TOKEN')} if 'github' in url and os.environ.get('GITHUB_TOKEN') else {})
-          with _ur.urlopen(req, context=context) as response:
-          '''
+          new_code = re.sub(
+              r"^(\s*)with urllib\.request\.urlopen\(url, context=context\) as response:",
+              r"\1import urllib.request as _ur\n\1req = _ur.Request(url, headers={'Authorization': 'Bearer ' + os.environ.get('GITHUB_TOKEN')} if 'github' in url and os.environ.get('GITHUB_TOKEN') else {})\n\1with _ur.urlopen(req, context=context) as response:",
+              code,
+              flags=re.MULTILINE
+          )
           
-          if old_code in code:
-              path.write_text(code.replace(old_code, new_code.strip()), encoding="utf-8")
+          if new_code != code:
+              path.write_text(new_code, encoding="utf-8")
               print("Successfully patched cibuildwheel!")
           else:
               print("Could not find the code to patch. It might fail.")
