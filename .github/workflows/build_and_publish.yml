@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2
+        uses: pypa/cibuildwheel@v2.22.0
         env:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_SKIP: "pp*" # Skip PyPy as C extensions are often tricky with it, focus on CPython.
