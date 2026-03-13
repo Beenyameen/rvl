@@ -117,9 +117,28 @@ static PyObject* rvl_decompress(PyObject* self, PyObject* args) {
     return result;
 }
 
+PyDoc_STRVAR(compress_doc,
+"compress(data, /)\n"
+"--\n\n"
+"Compress a 16-bit depth image array.\n\n"
+"Args:\n"
+"    data (bytes | bytearray | memoryview): The raw 16-bit depth data to compress.\n"
+"        The length must be a multiple of 2 bytes.\n\n"
+"Returns:\n"
+"    bytes: The RVL compressed image data.");
+
+PyDoc_STRVAR(decompress_doc,
+"decompress(data, /)\n"
+"--\n\n"
+"Decompress an RVL compressed image.\n\n"
+"Args:\n"
+"    data (bytes | bytearray | memoryview): The RVL compressed bytes.\n\n"
+"Returns:\n"
+"    bytes: The decompressed 16-bit depth data.");
+
 static PyMethodDef RvlMethods[] = {
-    {"compress", rvl_compress, METH_VARARGS, "Compress a 16-bit image array. Returns bytes."},
-    {"decompress", rvl_decompress, METH_VARARGS, "Decompress RVL compressed bytes. Returns bytes."},
+    {"compress", rvl_compress, METH_VARARGS, compress_doc},
+    {"decompress", rvl_decompress, METH_VARARGS, decompress_doc},
     {NULL, NULL, 0, NULL}
 };
 

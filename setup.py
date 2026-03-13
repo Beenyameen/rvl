@@ -14,7 +14,7 @@ with open(os.path.join(here, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="rvl",
-    version="1.0.1",
+    version="1.0.2",
     description="Python bindings for the RVL lossless compression algorithm.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -42,6 +42,7 @@ setup(
     keywords="compression, rvl, image, 16-bit, depth, lossless",
     package_dir={"": "src"},
     packages=["rvl"],
+    package_data={"rvl": ["py.typed", "*.pyi"]},
     ext_modules=[rvl_ext],
     python_requires=">=3.2",
 )
