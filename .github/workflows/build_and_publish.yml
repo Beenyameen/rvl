@@ -23,7 +23,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.22.0
         env:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
-          CIBW_SKIP: "pp*" # Skip PyPy as C extensions are often tricky with it, focus on CPython.
+          CIBW_SKIP: "pp*"
 
       - uses: actions/upload-artifact@v4
         with:
