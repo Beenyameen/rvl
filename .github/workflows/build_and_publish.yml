@@ -24,6 +24,7 @@ jobs:
         env:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_SKIP: "pp*"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
