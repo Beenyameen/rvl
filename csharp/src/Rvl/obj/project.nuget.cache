@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "9VzZhlvVa2s=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\beeny\\Desktop\\Software\\rvl\\csharp\\src\\Rvl\\Rvl.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\beeny\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\beeny\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

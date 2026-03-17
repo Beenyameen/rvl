@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- NuGet properties -->
+    <PackageId>rvl</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Andrew D. Wilson, Beenyameen</Authors>
+    <Description>C# port of the RVL algorithm, a lossless compression technique designed for 16-bit depth images.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/Beenyameen/rvl</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>

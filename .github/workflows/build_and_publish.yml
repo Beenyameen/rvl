@@ -3,6 +3,7 @@ name: Build and Publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
   push:
     branches: [main]
     paths-ignore:
@@ -91,10 +92,35 @@ jobs:
           name: cibw-sdist
           path: dist/*.tar.gz
 
+  build_nuget:
+    name: Build NuGet package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore Rvl/Rvl.csproj
+
+      - name: Build
+        run: dotnet build Rvl/Rvl.csproj -c Release --no-restore
+
+      - name: Pack
+        run: dotnet pack Rvl/Rvl.csproj -c Release --no-build --output ./nupkg
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: ./nupkg/*.nupkg
+
   upload_pypi:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'published'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'release' && github.event.action == 'published')
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -105,3 +131,21 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+
+  upload_nuget:
+    needs: build_nuget
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'release' && github.event.action == 'published')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: ./nupkg
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Push NuGet package
+        run: dotnet nuget push ./nupkg/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
