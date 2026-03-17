@@ -65,7 +65,7 @@ jobs:
               print("Could not find the code to patch. It might fail.")
 
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse
+        run: python -m cibuildwheel --output-dir wheelhouse python
         env:
           CIBW_ARCHS_LINUX: "auto aarch64"
           CIBW_ARCHS_WINDOWS: "auto ARM64"
@@ -76,11 +76,21 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: ./python/wheelhouse/*.whl
+          if-no-files-found: ignore
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}-root
           path: ./wheelhouse/*.whl
+          if-no-files-found: ignore
 
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./python
     steps:
       - uses: actions/checkout@v4
 
@@ -90,11 +100,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: cibw-sdist
-          path: dist/*.tar.gz
+          path: python/dist/*.tar.gz
 
   build_nuget:
     name: Build NuGet package
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./csharp
     steps:
       - uses: actions/checkout@v4
 
@@ -104,18 +117,18 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore Rvl/Rvl.csproj
+        run: dotnet restore src/Rvl/Rvl.csproj
 
       - name: Build
-        run: dotnet build Rvl/Rvl.csproj -c Release --no-restore
+        run: dotnet build src/Rvl/Rvl.csproj -c Release --no-restore
 
       - name: Pack
-        run: dotnet pack Rvl/Rvl.csproj -c Release --no-build --output ./nupkg
+        run: dotnet pack src/Rvl/Rvl.csproj -c Release --no-build --output ./nupkg
 
       - uses: actions/upload-artifact@v4
         with:
           name: nuget-package
-          path: ./nupkg/*.nupkg
+          path: ./csharp/nupkg/*.nupkg
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
