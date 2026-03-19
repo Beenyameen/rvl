@@ -1,6 +1,0 @@
-C:\Users\beeny\Desktop\Software\rvl\obj\Debug\net8.0\CsharpCrossTest.csproj.AssemblyReference.cache
-C:\Users\beeny\Desktop\Software\rvl\obj\Debug\net8.0\CsharpCrossTest.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\beeny\Desktop\Software\rvl\obj\Debug\net8.0\CsharpCrossTest.AssemblyInfoInputs.cache
-C:\Users\beeny\Desktop\Software\rvl\obj\Debug\net8.0\CsharpCrossTest.AssemblyInfo.cs
-C:\Users\beeny\Desktop\Software\rvl\obj\Debug\net8.0\CsharpCrossTest.csproj.CoreCompileInputs.cache
-C:\Users\beeny\Desktop\Software\rvl\obj\Debug\net8.0\CsharpCrossTest.sourcelink.json
