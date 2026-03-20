@@ -7,11 +7,16 @@
     
     <!-- NuGet properties -->
     <PackageId>rvl</PackageId>
-    <Version>1.0.3</Version>
-    <Authors>Andrew D. Wilson, Beenyameen</Authors>
+    <Version>1.0.4</Version>
+    <Authors>Beenyameen</Authors>
     <Description>C# port of the RVL algorithm, a lossless compression technique designed for 16-bit depth images.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Beenyameen/rvl</RepositoryUrl>
-  </PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
 
-</Project>
+    <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    </Project>

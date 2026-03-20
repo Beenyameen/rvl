@@ -2,7 +2,7 @@ using System;
 
 namespace Rvl
 {
-    public static class Rvl
+    public static class RvlCodec
     {
         public static byte[] Compress(byte[] data)
         {

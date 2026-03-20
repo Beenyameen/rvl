@@ -12,11 +12,11 @@ namespace Rvl.Tests
             byte[] originalBytes = new byte[original.Length * 2];
             Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = Rvl.Compress(originalBytes);
+            byte[] compressed = RvlCodec.Compress(originalBytes);
             Assert.NotNull(compressed);
             Assert.True(compressed.Length > 0);
 
-            byte[] decompressed = Rvl.Decompress(compressed);
+            byte[] decompressed = RvlCodec.Decompress(compressed);
             Assert.NotNull(decompressed);
             Assert.Equal(originalBytes, decompressed);
         }
@@ -25,8 +25,8 @@ namespace Rvl.Tests
         public void TestCompressDecompressEmpty()
         {
             byte[] original = new byte[0];
-            byte[] compressed = Rvl.Compress(original);
-            byte[] decompressed = Rvl.Decompress(compressed);
+            byte[] compressed = RvlCodec.Compress(original);
+            byte[] decompressed = RvlCodec.Decompress(compressed);
             Assert.Equal(original, decompressed);
         }
 
@@ -37,10 +37,10 @@ namespace Rvl.Tests
             byte[] originalBytes = new byte[original.Length * 2];
             Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = Rvl.Compress(originalBytes);
+            byte[] compressed = RvlCodec.Compress(originalBytes);
             Assert.True(compressed.Length < originalBytes.Length);
 
-            byte[] decompressed = Rvl.Decompress(compressed);
+            byte[] decompressed = RvlCodec.Decompress(compressed);
             Assert.Equal(originalBytes, decompressed);
         }
 
@@ -51,8 +51,8 @@ namespace Rvl.Tests
             byte[] originalBytes = new byte[original.Length * 2];
             Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = Rvl.Compress(originalBytes);
-            byte[] decompressed = Rvl.Decompress(compressed);
+            byte[] compressed = RvlCodec.Compress(originalBytes);
+            byte[] decompressed = RvlCodec.Decompress(compressed);
             Assert.Equal(originalBytes, decompressed);
         }
 
@@ -68,8 +68,8 @@ namespace Rvl.Tests
             byte[] originalBytes = new byte[original.Length * 2];
             Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = Rvl.Compress(originalBytes);
-            byte[] decompressed = Rvl.Decompress(compressed);
+            byte[] compressed = RvlCodec.Compress(originalBytes);
+            byte[] decompressed = RvlCodec.Decompress(compressed);
             Assert.Equal(originalBytes, decompressed);
         }
 
@@ -77,10 +77,10 @@ namespace Rvl.Tests
         public void TestInvalidInput()
         {
             byte[] badInput = { 1, 2, 3 };
-            var ex1 = Assert.Throws<ArgumentException>(() => Rvl.Compress(badInput));
+            var ex1 = Assert.Throws<ArgumentException>(() => RvlCodec.Compress(badInput));
             Assert.Contains("multiple of 2", ex1.Message);
 
-            var ex2 = Assert.Throws<ArgumentException>(() => Rvl.Decompress(badInput));
+            var ex2 = Assert.Throws<ArgumentException>(() => RvlCodec.Decompress(badInput));
             Assert.Contains("too short", ex2.Message);
         }
 
@@ -88,7 +88,7 @@ namespace Rvl.Tests
         public void TestDecompressInvalidPixels()
         {
             byte[] badHeader = { 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 };
-            var ex = Assert.Throws<ArgumentException>(() => Rvl.Decompress(badHeader));
+            var ex = Assert.Throws<ArgumentException>(() => RvlCodec.Decompress(badHeader));
             Assert.Contains("Invalid number of pixels", ex.Message);
         }
     }
