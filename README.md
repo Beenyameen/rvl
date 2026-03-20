@@ -21,4 +21,4 @@ pip install rvl
 
 ## Credit
 
-This repository relies on the core RVL algorithm developed by Andrew D. Wilson. For details on the algorithm's mechanics and performance, refer to the [original paper](https://www.microsoft.com/en-us/research/publication/fast-lossless-depth-image-compression/).
+This repository relies on the core RVL algorithm developed by Andrew D. Wilson. For details on the algorithm's mechanics and performance, refer to the [original paper](https://doi.org/10.1145/3132272.3134144).
