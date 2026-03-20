@@ -9,24 +9,21 @@ namespace Rvl.Tests
         public void TestCompressDecompressBasic()
         {
             short[] original = { 0, 0, 0, 1, 2, 3, 0, 0, 4, 5, 0 };
-            byte[] originalBytes = new byte[original.Length * 2];
-            Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = RvlCodec.Compress(originalBytes);
+            byte[] compressed = RvlCodec.Compress(original);
             Assert.NotNull(compressed);
             Assert.True(compressed.Length > 0);
 
-            byte[] decompressed = RvlCodec.Decompress(compressed);
-            Assert.NotNull(decompressed);
-            Assert.Equal(originalBytes, decompressed);
+            short[] decompressed = RvlCodec.Decompress(compressed);
+            Assert.Equal(original, decompressed);
         }
 
         [Fact]
         public void TestCompressDecompressEmpty()
         {
-            byte[] original = new byte[0];
+            short[] original = Array.Empty<short>();
             byte[] compressed = RvlCodec.Compress(original);
-            byte[] decompressed = RvlCodec.Decompress(compressed);
+            short[] decompressed = RvlCodec.Decompress(compressed);
             Assert.Equal(original, decompressed);
         }
 
@@ -34,26 +31,22 @@ namespace Rvl.Tests
         public void TestCompressDecompressLargeZeros()
         {
             short[] original = new short[10000];
-            byte[] originalBytes = new byte[original.Length * 2];
-            Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = RvlCodec.Compress(originalBytes);
-            Assert.True(compressed.Length < originalBytes.Length);
+            byte[] compressed = RvlCodec.Compress(original);
+            Assert.True(compressed.Length < original.Length * 2);
 
-            byte[] decompressed = RvlCodec.Decompress(compressed);
-            Assert.Equal(originalBytes, decompressed);
+            short[] decompressed = RvlCodec.Decompress(compressed);
+            Assert.Equal(original, decompressed);
         }
 
         [Fact]
         public void TestCompressDecompressNegativeValues()
         {
             short[] original = { 0, -1, -500, 32767, -32768, 0, 42, -42 };
-            byte[] originalBytes = new byte[original.Length * 2];
-            Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = RvlCodec.Compress(originalBytes);
-            byte[] decompressed = RvlCodec.Decompress(compressed);
-            Assert.Equal(originalBytes, decompressed);
+            byte[] compressed = RvlCodec.Compress(original);
+            short[] decompressed = RvlCodec.Decompress(compressed);
+            Assert.Equal(original, decompressed);
         }
 
         [Fact]
@@ -65,23 +58,18 @@ namespace Rvl.Tests
             {
                 original[i] = (short)random.Next(-32768, 32768);
             }
-            byte[] originalBytes = new byte[original.Length * 2];
-            Buffer.BlockCopy(original, 0, originalBytes, 0, originalBytes.Length);
 
-            byte[] compressed = RvlCodec.Compress(originalBytes);
-            byte[] decompressed = RvlCodec.Decompress(compressed);
-            Assert.Equal(originalBytes, decompressed);
+            byte[] compressed = RvlCodec.Compress(original);
+            short[] decompressed = RvlCodec.Decompress(compressed);
+            Assert.Equal(original, decompressed);
         }
 
         [Fact]
         public void TestInvalidInput()
         {
             byte[] badInput = { 1, 2, 3 };
-            var ex1 = Assert.Throws<ArgumentException>(() => RvlCodec.Compress(badInput));
-            Assert.Contains("multiple of 2", ex1.Message);
-
-            var ex2 = Assert.Throws<ArgumentException>(() => RvlCodec.Decompress(badInput));
-            Assert.Contains("too short", ex2.Message);
+            var ex = Assert.Throws<ArgumentException>(() => RvlCodec.Decompress(badInput));
+            Assert.Contains("too short", ex.Message);
         }
 
         [Fact]

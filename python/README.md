@@ -23,5 +23,5 @@ data = array.array("h", [0, 0, 100, 102, 105, 0, 0, 0, 250, 255])
 compressed_data = rvl.compress(data)
 
 # Decompress.
-decompressed_bytes = rvl.decompress(compressed_data)
+decompressed_data = rvl.decompress(compressed_data)
 ```

@@ -1,64 +1,49 @@
 using System;
+using System.Buffers.Binary;
 
 namespace Rvl
 {
     public static class RvlCodec
     {
-        public static byte[] Compress(byte[] data)
+        public static byte[] Compress(ReadOnlySpan<short> data)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            if (data.Length % 2 != 0)
-                throw new ArgumentException("Input buffer length must be a multiple of 2 bytes (16-bit pixels).");
-
-            int numPixels = data.Length / 2;
-
-            // Header (4 bytes) + roughly worst-case scenario
+            int numPixels = data.Length;
             int outMaxSize = 4 + numPixels * 3 + 1024;
             byte[] output = new byte[outMaxSize];
 
-            output[0] = (byte)(numPixels & 0xFF);
-            output[1] = (byte)((numPixels >> 8) & 0xFF);
-            output[2] = (byte)((numPixels >> 16) & 0xFF);
-            output[3] = (byte)((numPixels >> 24) & 0xFF);
+            BinaryPrimitives.WriteInt32LittleEndian(output, numPixels);
 
             int compressedSize;
 
             unsafe
             {
-                fixed (byte* pIn = data)
+                fixed (short* pIn = data)
                 fixed (byte* pOut = output)
                 {
-                    short* input = (short*)pIn;
-                    byte* outBuf = pOut + 4;
-                    compressedSize = CompressRVL(input, outBuf, numPixels);
+                    compressedSize = CompressRVL(pIn, pOut + 4, numPixels);
                 }
             }
 
-            byte[] result = new byte[4 + compressedSize];
-            Array.Copy(output, result, result.Length);
-            return result;
+            return output.AsSpan(0, 4 + compressedSize).ToArray();
         }
 
-        public static byte[] Decompress(byte[] data)
+        public static short[] Decompress(ReadOnlySpan<byte> data)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
             if (data.Length < 4)
                 throw new ArgumentException("Compressed data too short.");
 
-            int numPixels = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+            int numPixels = BinaryPrimitives.ReadInt32LittleEndian(data);
             if (numPixels < 0)
                 throw new ArgumentException("Invalid number of pixels.");
 
-            byte[] output = new byte[numPixels * 2];
+            short[] output = new short[numPixels];
 
             unsafe
             {
                 fixed (byte* pIn = data)
-                fixed (byte* pOut = output)
+                fixed (short* pOut = output)
                 {
-                    byte* input = pIn + 4;
-                    short* outBuf = (short*)pOut;
-                    DecompressRVL(input, outBuf, numPixels);
+                    DecompressRVL(pIn + 4, pOut, numPixels);
                 }
             }
 
